@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	_ "go_ipa_uploader/config"
 )
 
 func main() {

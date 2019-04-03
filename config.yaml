@@ -1,0 +1,12 @@
+config:
+  files_path:
+    api_path: ""
+    plists_path: ""
+    tem_path: ""
+  aliyun:
+    aliyun_bucket: ""
+    access_key_id: ""
+    access_key_secret: ""
+    end_point: ""
+  application:
+    max_multipart_memory: 100
