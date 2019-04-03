@@ -3,11 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="d3dfda45-6bc7-4a84-bcb1-d144e31a2c16" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go_ipa_uploader" beforeDir="false" afterPath="$PROJECT_DIR$/go_ipa_uploader" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/handles.go" beforeDir="false" afterPath="$PROJECT_DIR$/handles.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -17,29 +15,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/handles.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="114">
-              <caret line="47" column="54" selection-start-line="47" selection-start-column="4" selection-end-line="47" selection-end-column="54" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/config/config.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="397">
-              <caret line="161" column="11" selection-start-line="161" selection-start-column="11" selection-end-line="161" selection-end-column="11" />
+            <state relative-caret-position="207">
+              <caret line="46" column="50" lean-forward="true" selection-start-line="46" selection-start-column="50" selection-end-line="46" selection-end-column="50" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config.yaml">
+        <entry file="file://$PROJECT_DIR$/config/config.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
+            <state relative-caret-position="-30">
+              <caret line="137" column="44" selection-start-line="137" selection-start-column="44" selection-end-line="137" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -70,6 +59,8 @@
       <find>ipa-uploader</find>
       <find>api_path</find>
       <find>dir</find>
+      <find>ipas</find>
+      <find>.idea</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/tem/2019-04-02 14:49:38/Payload/futradeNotecase.app</dir>
@@ -89,14 +80,14 @@
         <option value="$PROJECT_DIR$/api/api.go" />
         <option value="$PROJECT_DIR$/go.mod" />
         <option value="$PROJECT_DIR$/main.go" />
-        <option value="$PROJECT_DIR$/handles.go" />
         <option value="$PROJECT_DIR$/config.yaml" />
         <option value="$PROJECT_DIR$/config/config.go" />
+        <option value="$PROJECT_DIR$/handles.go" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="425" />
+    <option name="x" value="79" />
     <option name="y" value="23" />
     <option name="width" value="1406" />
     <option name="height" value="796" />
@@ -107,7 +98,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -115,20 +105,11 @@
               <item name="go-ipa-uploader" type="b2602c69:ProjectViewProjectNode" />
               <item name="go-ipa-uploader" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="go-ipa-uploader" type="b2602c69:ProjectViewProjectNode" />
-              <item name="go-ipa-uploader" type="462c0819:PsiDirectoryNode" />
-              <item name="plists" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="go-ipa-uploader" type="b2602c69:ProjectViewProjectNode" />
-              <item name="go-ipa-uploader" type="462c0819:PsiDirectoryNode" />
-              <item name="tem" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -166,10 +147,10 @@
     </configuration>
   </component>
   <component name="ToolWindowManager">
-    <frame x="289" y="23" width="1406" height="796" extended-state="0" />
+    <frame x="79" y="23" width="1406" height="796" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25879765" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.26246333" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -286,22 +267,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../Go/pkg/mod/github.com/spf13/viper@v1.3.2/viper.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="1194" column="5" selection-start-line="1194" selection-start-column="5" selection-end-line="1194" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Go/pkg/mod/github.com/spf13/viper@v1.3.2/viper.go" />
     <entry file="file://$PROJECT_DIR$/go.mod">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
           <caret line="2" column="9" selection-start-line="2" selection-start-column="9" selection-end-line="2" selection-end-column="9" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/go.sum">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/main.go">
       <provider selected="true" editor-type-id="text-editor">
@@ -327,20 +299,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/handles.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="47" column="54" selection-start-line="47" selection-start-column="4" selection-end-line="47" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config.yaml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="7" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/go/src/os/file.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1985">
@@ -355,10 +313,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/go.sum">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.yaml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="17" selection-start-line="3" selection-start-column="17" selection-end-line="3" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/config/config.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="397">
-          <caret line="161" column="11" selection-start-line="161" selection-start-column="11" selection-end-line="161" selection-end-column="11" />
+        <state relative-caret-position="-30">
+          <caret line="137" column="44" selection-start-line="137" selection-start-column="44" selection-end-line="137" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="179">
+          <caret line="97" column="6" lean-forward="true" selection-start-line="97" selection-start-column="6" selection-end-line="97" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/handles.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="207">
+          <caret line="46" column="50" lean-forward="true" selection-start-line="46" selection-start-column="50" selection-end-line="46" selection-end-column="50" />
         </state>
       </provider>
     </entry>

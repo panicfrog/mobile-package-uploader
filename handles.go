@@ -8,7 +8,6 @@ import (
 	"io"
 	"io/ioutil"
 	_ "net/http"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -45,13 +44,8 @@ func upload_ipa(c *gin.Context) {
 		return
 	}
 
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
-		api.SendFail("invalid content for ipa file", c)
-		return
-	}
 	current := time.Now().Format("20060102150405")
-	ipa_path := dir + "/ipas/" + current + " " + filename + ".zip"
+	ipa_path := config.Config.FilesPath.IpaPath + "/" + current + " " + filename + ".zip"
 	out, erro := os.Create(ipa_path)
 	if erro != nil {
 		api.SendFail(erro.Error(), c)
@@ -72,7 +66,8 @@ func upload_ipa(c *gin.Context) {
 		return
 	}
 
-	tem := dir + "/tem/" + current
+	tem := config.Config.FilesPath.TemPath + "/" + current
+	//tem := dir + "/tem/" + current
 	unarchiveErr := archiver.Unarchive(ipa_path, tem)
 
 	if unarchiveErr != nil {
@@ -124,22 +119,16 @@ func aliyunOSSUpload(filename string, localPath string) (downloadURL string, err
 }
 
 func generatePlist(current string, downloadURL string) (plistPath string, plistDir string,genErr error) {
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
-		genErr = err
-		return
-	}
-	tem := dir + "/tem/" + current
+	tem := config.Config.FilesPath.TemPath + "/" + current
 	payloadDir := tem + "/Payload"
 	dirs, _ := ioutil.ReadDir(payloadDir)
 	infoPlistPath := ""
-	if len(dir) > 0 && dirs[0].IsDir() {
+	if len(dirs) > 0 && dirs[0].IsDir() {
 		infoPlistPath = payloadDir + "/" + dirs[0].Name() + "/info.plist"
 	} else {
 		genErr = errors.New("读取文件夹出错")
 		return
 	}
-	//infoPlistPath := tem + "/Payload"
 	bplist, readErr := ioutil.ReadFile(infoPlistPath)
 	if readErr != nil {
 		genErr = readErr
@@ -183,13 +172,13 @@ func generatePlist(current string, downloadURL string) (plistPath string, plistD
 		genErr = marshalErr
 		return
 	}
-	bpDir := dir + "/plists/" + current
+	bpDir := config.Config.FilesPath.PlistsPath + "/" + current
 	createErr := os.Mkdir(bpDir, os.ModePerm)
 	if createErr != nil {
 		genErr = createErr
 		return
 	}
-	bpPath := dir + "/plists/" + current + "/" + "manifast.plist"
+	bpPath := config.Config.FilesPath.PlistsPath + "/" + current + "/" + "manifast.plist"
 	ioErr := ioutil.WriteFile(bpPath, bp, os.ModePerm)
 	if ioErr != nil {
 		genErr = ioErr

@@ -70,42 +70,24 @@ func init() {
 		TemPath: fpTemPath,
 	}
 
-	//check filespath
-	//if fp.TemPath == "" {
-	//	dir, temErr := filepath.Abs(filepath.Dir(os.Args[0]))
-	//	if temErr != nil {
-	//		panic(temErr)
-	//	}
-	//	fp.TemPath = dir + "/tem"
-	//}
-	//_, temErr := os.Create(fp.TemPath)
-	//if temErr != nil {
-	//	panic(temErr)
-	//}
-	//
-	//if fp.IpaPath == "" {
-	//	dir, temErr := filepath.Abs(filepath.Dir(os.Args[0]))
-	//	if temErr != nil {
-	//		panic(temErr)
-	//	}
-	//	fp.IpaPath = dir + "/ipas"
-	//}
-	//_, ipaErr := os.Create(fp.IpaPath)
-	//if ipaErr != nil {
-	//	panic(ipaErr)
-	//}
-	//
-	//if fp.PlistsPath == "" {
-	//	dir, temErr := filepath.Abs(filepath.Dir(os.Args[0]))
-	//	if temErr != nil {
-	//		panic(temErr)
-	//	}
-	//	fp.PlistsPath = dir + "/plists"
-	//}
-	//_, plistErr := os.Create(fp.PlistsPath)
-	//if plistErr != nil {
-	//	panic(plistErr)
-	//}
+	replaceEmptyToCurrent(&fp.TemPath, "tem")
+	replaceEmptyToCurrent(&fp.IpaPath, "ipas")
+	replaceEmptyToCurrent(&fp.PlistsPath, "plists")
+
+	_,temErr := checkDirOrMkdir(fp.TemPath)
+	if temErr != nil {
+		panic(temErr)
+	}
+
+	_, ipaErr := checkDirOrMkdir(fp.IpaPath)
+	if ipaErr != nil {
+		panic(ipaErr)
+	}
+
+	_, pliErr := checkDirOrMkdir(fp.PlistsPath)
+	if pliErr != nil {
+		panic(pliErr)
+	}
 
 	aliBucket, ok := aMap["aliyun_bucket"].(string)
 	checkOk(ok, "aliyun_bucket error")
@@ -152,8 +134,15 @@ func checkOk(ok bool, message string)  {
 func checkDirOrMkdir(p string) (path string, err error) {
 	f, e := os.Stat(p)
 	if e != nil {
-		if os.IsExist(e) {
-			path = p
+		if os.IsNotExist(e) {
+			mkErr := os.Mkdir(p, os.ModePerm)
+			if mkErr != nil {
+				err = mkErr
+			} else {
+				path = p
+			}
+		} else {
+			err = e
 		}
 		return
 	}
@@ -163,4 +152,14 @@ func checkDirOrMkdir(p string) (path string, err error) {
 		err = errors.New(p + " is not a dir")
 	}
 	return
+}
+
+func replaceEmptyToCurrent(p *string, subDir string) {
+	if *p == "" {
+		curr,err := filepath.Abs(filepath.Dir(os.Args[0]))
+		if err != nil {
+			panic(err)
+		}
+		*p = curr + "/" + subDir
+	}
 }
