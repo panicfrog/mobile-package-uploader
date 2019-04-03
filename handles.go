@@ -1,12 +1,11 @@
 package main
 
 import (
-	"context"
 	"errors"
 	"github.com/gin-gonic/gin"
+	"howett.net/plist"
 	"io"
 	"io/ioutil"
-	"log"
 	_ "net/http"
 	"path/filepath"
 	"strings"
@@ -14,10 +13,7 @@ import (
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/mholt/archiver"
-	"github.com/qiniu/api.v7/auth/qbox"
-	"github.com/qiniu/api.v7/storage"
 	"go_ipa_uploader/api"
-	"howett.net/plist"
 	neturl "net/url"
 	"os"
 )
@@ -56,11 +52,11 @@ func upload_ipa(c *gin.Context) {
 	current := time.Now().Format("20060102150405")
 	ipa_path := dir + "/ipas/" + current + " " + filename + ".zip"
 	out, erro := os.Create(ipa_path)
-	defer out.Close()
 	if erro != nil {
 		api.SendFail(erro.Error(), c)
 		return
 	}
+	defer out.Close()
 	w, openErr := file.Open()
 
 	if openErr != nil {
@@ -83,19 +79,22 @@ func upload_ipa(c *gin.Context) {
 		return
 	}
 
-	plistPath, genErr := generatePlist(current, downloadPath)
+	plistPath, plistDir, genErr := generatePlist(current, downloadPath)
 	if genErr != nil {
 		api.SendFail(genErr.Error(), c)
 		return
 	}
 
-	plistDownload, plistUploadErr := aliyunOSSUpload("manifast.plist", plistPath)
+	plistDownload, plistUploadErr := aliyunOSSUpload(current + "manifest.plist", plistPath)
 	if plistUploadErr != nil {
 		api.SendFail(plistUploadErr.Error(), c)
 		return
 	}
-	//var p string
-	//api.SendSuccess("上传成功", *[]byte(plistDownload), &p, c)
+	actionURL := "itms-services://?action=download-manifest&url=" + plistDownload
+	api.SendSuccessString("上传成功", actionURL, c)
+	_ = os.Remove(ipa_path)
+	_ = os.RemoveAll(plistDir)
+	_ = os.RemoveAll(tem)
 }
 
 func aliyunOSSUpload(filename string, localPath string) (downloadURL string, err error) {
@@ -117,14 +116,13 @@ func aliyunOSSUpload(filename string, localPath string) (downloadURL string, err
 	err = bucket.PutObjectFromFile(filename, localPath)
 	if err == nil {
 		p := "https://ipa-uploader.oss-cn-shenzhen.aliyuncs.com" + "/" + neturl.PathEscape(filename)
-		log.Println(p)
 		downloadURL = p
 		return
 	}
 	return
 }
 
-func generatePlist(current string, downloadURL string) (plistPath string, genErr error) {
+func generatePlist(current string, downloadURL string) (plistPath string, plistDir string,genErr error) {
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
 		genErr = err
@@ -147,7 +145,11 @@ func generatePlist(current string, downloadURL string) (plistPath string, genErr
 		return
 	}
 	v := make(map[string]interface{})
-	plist.Unmarshal(bplist, v)
+	_, pUnmaErro := plist.Unmarshal(bplist, v)
+	if pUnmaErro != nil {
+		genErr = pUnmaErro
+		return
+	}
 	bundleId := v["CFBundleIdentifier"].(string)
 	version := v["CFBundleShortVersionString"].(string)
 	//buildVersion := v["CFBundleVersion"].(string)
@@ -168,7 +170,7 @@ func generatePlist(current string, downloadURL string) (plistPath string, genErr
 	manifast := map[string]interface{}{
 		"items": []map[string]interface{}{
 			map[string]interface{}{
-				"asserts": []map[string]string{
+				"assets": []map[string]string{
 					asset,
 				},
 				"metadata": metadata,
@@ -193,34 +195,6 @@ func generatePlist(current string, downloadURL string) (plistPath string, genErr
 		return
 	}
 	plistPath = bpPath
-	return
-}
-
-func qiniuUpload(filename string, localPath string) (err error) {
-	bucket := "ipa_uploader"
-	key := filename
-	accessKey := "MGcrk96J5WU5NMPvNP0ZBl1vzvZPSQfS5e_R3-H-"
-	secretKey := "xT9htZWcqGT4cJWBRyWW3WjJoxry3IrDVhYbe76C"
-	putPolicy := storage.PutPolicy{
-		Scope: bucket,
-	}
-
-	mac := qbox.NewMac(accessKey, secretKey)
-	localfile := localPath
-	upToken := putPolicy.UploadToken(mac)
-	cfg := storage.Config{}
-	cfg.Zone = &storage.ZoneHuanan
-	cfg.UseHTTPS = true
-	cfg.UseCdnDomains = false
-
-	formUploader := storage.NewFormUploader(&cfg)
-	ret := storage.PutRet{}
-	putExtra := storage.PutExtra{}
-
-	err = formUploader.PutFile(context.Background(), &ret, upToken, key, localfile, &putExtra)
-	if err != nil {
-		log.Println(err)
-	}
-	log.Println("hash: ", ret.Hash, "key: ", ret.Key)
+	plistDir = bpDir
 	return
 }
