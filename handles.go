@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"go_ipa_uploader/config"
 	"howett.net/plist"
 	"io"
 	"io/ioutil"
@@ -98,10 +99,10 @@ func upload_ipa(c *gin.Context) {
 }
 
 func aliyunOSSUpload(filename string, localPath string) (downloadURL string, err error) {
-	accessKeyId := "LTAILE7u7V2G6LxX"
-	accessKeySecret := "ItjQm5myPQClvqvpX1QnqraKl12GtX"
-	endPoint := "http://oss-cn-shenzhen.aliyuncs.com"
-	bucketName := "ipa-uploader"
+	accessKeyId := config.Config.Aliyun.AccessKeyId
+	accessKeySecret := config.Config.Aliyun.AccessKeySecret
+	endPoint := config.Config.Aliyun.EndPoint
+	bucketName := config.Config.Aliyun.AliyunBucket
 	client, err := oss.New(endPoint, accessKeyId, accessKeySecret)
 	downloadURL = ""
 	if err != nil {
@@ -115,7 +116,7 @@ func aliyunOSSUpload(filename string, localPath string) (downloadURL string, err
 
 	err = bucket.PutObjectFromFile(filename, localPath)
 	if err == nil {
-		p := "https://ipa-uploader.oss-cn-shenzhen.aliyuncs.com" + "/" + neturl.PathEscape(filename)
+		p := "https://" + bucketName + ".oss-cn-shenzhen.aliyuncs.com" + "/" + neturl.PathEscape(filename)
 		downloadURL = p
 		return
 	}

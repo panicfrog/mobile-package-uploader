@@ -1,12 +1,12 @@
 config:
   files_path:
-    api_path: ""
+    ipa_path: ""
     plists_path: ""
     tem_path: ""
   aliyun:
-    aliyun_bucket: ""
-    access_key_id: ""
-    access_key_secret: ""
-    end_point: ""
+    aliyun_bucket: "ipa-uploader"
+    access_key_id: "LTAILE7u7V2G6LxX"
+    access_key_secret: "ItjQm5myPQClvqvpX1QnqraKl12GtX"
+    end_point: "http://oss-cn-shenzhen.aliyuncs.com"
   application:
     max_multipart_memory: 100

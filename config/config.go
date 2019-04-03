@@ -19,7 +19,7 @@ type aliyun struct {
 }
 
 type filesPath struct {
-	ApiPath string
+	IpaPath string
 	PlistsPath string
 	TemPath string
 }
@@ -57,18 +57,55 @@ func init() {
 	appMap, ok := config["application"].(map[string]interface{})
 	checkOk(ok, "读取application出错")
 
-	fpApiPath, ok := fpMap["api_path"].(string)
-	checkOk(ok, "api_path error")
+	fpIpaPath, ok := fpMap["ipa_path"].(string)
+	checkOk(ok, "ipa_path error")
 	fpPlistPath, ok := fpMap["plists_path"].(string)
 	checkOk(ok, "plists_path error")
 	fpTemPath, ok := fpMap["tem_path"].(string)
 	checkOk(ok, "tem_path error")
 
 	fp := filesPath{
-		ApiPath: fpApiPath,
+		IpaPath: fpIpaPath,
 		PlistsPath: fpPlistPath,
 		TemPath: fpTemPath,
 	}
+
+	//check filespath
+	//if fp.TemPath == "" {
+	//	dir, temErr := filepath.Abs(filepath.Dir(os.Args[0]))
+	//	if temErr != nil {
+	//		panic(temErr)
+	//	}
+	//	fp.TemPath = dir + "/tem"
+	//}
+	//_, temErr := os.Create(fp.TemPath)
+	//if temErr != nil {
+	//	panic(temErr)
+	//}
+	//
+	//if fp.IpaPath == "" {
+	//	dir, temErr := filepath.Abs(filepath.Dir(os.Args[0]))
+	//	if temErr != nil {
+	//		panic(temErr)
+	//	}
+	//	fp.IpaPath = dir + "/ipas"
+	//}
+	//_, ipaErr := os.Create(fp.IpaPath)
+	//if ipaErr != nil {
+	//	panic(ipaErr)
+	//}
+	//
+	//if fp.PlistsPath == "" {
+	//	dir, temErr := filepath.Abs(filepath.Dir(os.Args[0]))
+	//	if temErr != nil {
+	//		panic(temErr)
+	//	}
+	//	fp.PlistsPath = dir + "/plists"
+	//}
+	//_, plistErr := os.Create(fp.PlistsPath)
+	//if plistErr != nil {
+	//	panic(plistErr)
+	//}
 
 	aliBucket, ok := aMap["aliyun_bucket"].(string)
 	checkOk(ok, "aliyun_bucket error")
@@ -98,7 +135,6 @@ func init() {
 		Aliyun: ali,
 		FilesPath: fp,
 	}
-
 }
 
 func check(err error){
@@ -111,4 +147,20 @@ func checkOk(ok bool, message string)  {
 	if !ok {
 		panic(errors.New(message))
 	}
+}
+
+func checkDirOrMkdir(p string) (path string, err error) {
+	f, e := os.Stat(p)
+	if e != nil {
+		if os.IsExist(e) {
+			path = p
+		}
+		return
+	}
+	if f.IsDir() {
+		path = p
+	} else {
+		err = errors.New(p + " is not a dir")
+	}
+	return
 }
