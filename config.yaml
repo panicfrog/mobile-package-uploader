@@ -3,6 +3,7 @@ config:
     ipa_path: ""
     plists_path: ""
     tem_path: ""
+    apk_path: ""
   aliyun:
     aliyun_bucket: "ipa-uploader"
     access_key_id: "LTAILE7u7V2G6LxX"

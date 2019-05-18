@@ -5,7 +5,7 @@ require (
 	github.com/dsnet/compress v0.0.1 // indirect
 	github.com/gin-contrib/sse v0.0.0-20190301062529-5545eab6dad3 // indirect
 	github.com/gin-gonic/gin v1.3.0
-	github.com/golang/protobuf v1.3.1 // indirect
+	github.com/golang/protobuf v1.3.1
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/mattn/go-isatty v0.0.7 // indirect
 	github.com/mholt/archiver v3.1.1+incompatible
@@ -13,6 +13,7 @@ require (
 	github.com/pierrec/lz4 v2.0.5+incompatible // indirect
 	github.com/qiniu/api.v7 v7.2.5+incompatible
 	github.com/qiniu/x v7.0.8+incompatible // indirect
+	github.com/shogo82148/androidbinary v0.0.1 // indirect
 	github.com/spf13/viper v1.3.2
 	github.com/ugorji/go/codec v0.0.0-20190320090025-2dc34c0b8780 // indirect
 	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect

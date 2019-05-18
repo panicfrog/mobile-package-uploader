@@ -22,6 +22,7 @@ type filesPath struct {
 	IpaPath string
 	PlistsPath string
 	TemPath string
+	ApkPath string
 }
 
 type configuration struct {
@@ -59,20 +60,27 @@ func init() {
 
 	fpIpaPath, ok := fpMap["ipa_path"].(string)
 	checkOk(ok, "ipa_path error")
+
 	fpPlistPath, ok := fpMap["plists_path"].(string)
 	checkOk(ok, "plists_path error")
+
 	fpTemPath, ok := fpMap["tem_path"].(string)
 	checkOk(ok, "tem_path error")
+
+	fpApkPath, ok := fpMap["apk_path"].(string)
+	checkOk(ok, "apk_path error")
 
 	fp := filesPath{
 		IpaPath: fpIpaPath,
 		PlistsPath: fpPlistPath,
 		TemPath: fpTemPath,
+		ApkPath: fpApkPath,
 	}
 
 	replaceEmptyToCurrent(&fp.TemPath, "tem")
 	replaceEmptyToCurrent(&fp.IpaPath, "ipas")
 	replaceEmptyToCurrent(&fp.PlistsPath, "plists")
+	replaceEmptyToCurrent(&fp.ApkPath, "apks")
 
 	_,temErr := checkDirOrMkdir(fp.TemPath)
 	if temErr != nil {
@@ -89,12 +97,20 @@ func init() {
 		panic(pliErr)
 	}
 
+	_, apkErr := checkDirOrMkdir(fp.ApkPath)
+	if apkErr != nil {
+		panic(apkErr)
+	}
+
 	aliBucket, ok := aMap["aliyun_bucket"].(string)
 	checkOk(ok, "aliyun_bucket error")
+
 	aliAccessKeyId ,ok := aMap["access_key_id"].(string)
 	checkOk(ok, "access_key_id error")
+
 	aliAccessKeySecret, ok := aMap["access_key_secret"].(string)
 	checkOk(ok, "access_key_secret error")
+
 	aliEndPoint, ok := aMap["end_point"].(string)
 	checkOk(ok, "end_point error")
 

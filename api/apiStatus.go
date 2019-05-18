@@ -1,8 +1,15 @@
 package api
 
 
+type ApiStatus = int32
 var (
-	APISuccess int32 = 0
+	APISuccess ApiStatus = 0
 	// common fail
-	APIFailed int32 = 1
+	APIFailed ApiStatus = 1
+)
+
+type Platform = int
+const (
+	IOS Platform = 1
+	Android Platform = 2
 )

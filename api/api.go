@@ -6,21 +6,23 @@ import (
 	"net/http"
 )
 
-func SendSuccess(message string, data *json.RawMessage, c *gin.Context) (err error) {
+func SendSuccess(message string, v interface{}, c *gin.Context) {
 
-	v := make(map[string]interface{})
-
-	err = json.Unmarshal(*data, v)
+	res := SucccStruct{APISuccess, message, v}
+	response, err := json.Marshal(res)
 	if err != nil {
-		return
+		panic(err)
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"sc": APISuccess,
-		"message": message,
-		"data": v,
-	})
-	return
+	var m map[string]interface{}
+
+	err = json.Unmarshal(response, &m)
+
+	if err != nil {
+		panic(err)
+	}
+
+	c.JSON(http.StatusOK, m)
 }
 
 func SendSuccessString(message string, data string, c *gin.Context) {
