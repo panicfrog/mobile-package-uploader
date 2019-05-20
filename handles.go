@@ -3,7 +3,9 @@ package main
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"go_ipa_uploader/apks/ipa"
 	"log"
+	"strconv"
 
 	//"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"go_ipa_uploader/config"
@@ -16,16 +18,17 @@ import (
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/mholt/archiver"
+	"github.com/shogo82148/androidbinary/apk"
 	"go_ipa_uploader/api"
 	neturl "net/url"
 	"os"
-	//"github.com/shogo82148/androidbinary/apk"
 )
 
 func route(r *gin.Engine) {
 	r.GET("/hello", hello)
 	r.POST("/uploadIpa", uploadIpa)
 	r.POST("/uploadApk", uploadApk)
+	r.Static("/web","./www" )
 }
 
 func hello(c *gin.Context) {
@@ -34,6 +37,7 @@ func hello(c *gin.Context) {
 	})
 }
 
+// upload ipa
 func uploadIpa(c *gin.Context) {
 	file, formErro := c.FormFile("file")
 
@@ -84,7 +88,7 @@ func uploadIpa(c *gin.Context) {
 		return
 	}
 
-	plistPath, plistDir, genErr := generatePlist(current, downloadPath)
+	plistPath, plistDir,infoPlist, genErr := generatePlist(current, downloadPath)
 	if genErr != nil {
 		api.SendFail(genErr.Error(), c)
 		return
@@ -96,13 +100,21 @@ func uploadIpa(c *gin.Context) {
 		return
 	}
 	actionURL := "itms-services://?action=download-manifest&url=" + plistDownload
-	response := api.UpdataResponse{ api.IOS, actionURL }
+	response := api.UpdataResponse{
+		api.IOS,
+		actionURL ,
+		infoPlist.BundleId,
+		infoPlist.BundleShortVersion,
+		infoPlist.BundleVersion,
+		infoPlist.BundleName,
+	}
 	api.SendSuccess("上传成功", response, c)
 	_ = os.Remove(ipa_path)
 	_ = os.RemoveAll(plistDir)
 	_ = os.RemoveAll(tem)
 }
 
+// update apk
 func uploadApk(c *gin.Context) {
 	file, formErro := c.FormFile("file")
 
@@ -136,12 +148,32 @@ func uploadApk(c *gin.Context) {
 		log.Println(err)
 		panic(err)
 	}
+
+	pkg, err := apk.OpenFile(apk_path)
+	if err != nil {
+		log.Println(err)
+		panic(err)
+	}
+	version := pkg.Manifest().VersionName
+	build := strconv.Itoa(pkg.Manifest().VersionCode)
+	name, _ := pkg.Label(nil)
+	log.Println(name)
+
+	packageName := pkg.PackageName()
+
 	downloadPath, aliUploaderErr := aliyunOSSUpload(current + filename, apk_path)
 	if aliUploaderErr != nil {
 		api.SendFail(aliUploaderErr.Error(), c)
 		return
 	}
-	response := api.UpdataResponse{ api.Android, downloadPath }
+	response := api.UpdataResponse{
+		api.Android,
+		downloadPath ,
+		packageName,
+		version,
+		build,
+		name,
+	}
 	api.SendSuccess("上传成功", response, c)
 	_ = os.Remove(apk_path)
 }
@@ -173,7 +205,7 @@ func aliyunOSSUpload(filename string, localPath string) (downloadURL string, err
 	return
 }
 
-func generatePlist(current string, downloadURL string) (plistPath string, plistDir string,genErr error) {
+func generatePlist(current string, downloadURL string) (plistPath string, plistDir string, infoplist ipa.InfoPlist,genErr error) {
 	tem := config.Config.FilesPath.TemPath + "/" + current
 	payloadDir := tem + "/Payload"
 	dirs, _ := ioutil.ReadDir(payloadDir)
@@ -195,10 +227,13 @@ func generatePlist(current string, downloadURL string) (plistPath string, plistD
 		genErr = pUnmaErro
 		return
 	}
+
 	bundleId := v["CFBundleIdentifier"].(string)
 	version := v["CFBundleShortVersionString"].(string)
-	//buildVersion := v["CFBundleVersion"].(string)
+	buildVersion := v["CFBundleVersion"].(string)
 	displayName := v["CFBundleName"].(string)
+
+	infoplist = ipa.InfoPlist{version, buildVersion, displayName, bundleId }
 
 	metadata := map[string]string{
 		"bundle-identifier": bundleId,
