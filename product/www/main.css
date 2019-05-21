@@ -1,0 +1,96 @@
+html, body{
+    margin: 0;
+    padding: 0;
+    background-color: #f6f6f6;
+}
+.body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 1000px;
+}
+
+.header {
+    display: flex;
+    width: 100%;
+    height: 80px;
+    background-color: white;
+}
+
+.content {
+    display: flex;
+    flex-direction: row;
+    margin: 0 200px;
+    height: 800px;
+    background-color: #f0f0f0;
+}
+
+.footer {
+    display: flex;
+    width: 100%;
+    height: 200px;
+    background-color: #ededed;
+}
+
+.content-left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    /*background-color: #c8c8c8;*/
+}
+
+.split-line {
+    width: 1px;
+    background-color: #e6e6e6;
+}
+
+.content-right {
+    display: flex;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-around;
+    /*background-color: #d7d7d7;*/
+}
+
+.drop-area {
+    width: 180px;
+    height: 250px;
+    background-color: #ebebeb;
+}
+
+.ios-package {
+
+}
+
+.android-package {
+
+}
+
+.package {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    width: 210px;
+    height: 250px;
+    padding: 10px 0;
+    background-color: white;
+}
+
+.package-name {
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+}
+
+.package-version {
+    /*height: 35px;*/
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+}
+
+.package-qrcode {
+    width: 150px;
+    height: 150px;
+}
