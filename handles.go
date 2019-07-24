@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/base64"
 	"errors"
 	"github.com/gin-gonic/gin"
-	"go_ipa_uploader/apks/ipa"
+	"go_ipa_uploader/ipa"
+	"go_ipa_uploader/others"
 	"log"
 	"strconv"
 
@@ -88,7 +90,7 @@ func uploadIpa(c *gin.Context) {
 		return
 	}
 
-	plistPath, plistDir,infoPlist, genErr := generatePlist(current, downloadPath)
+	plistPath, plistDir,infoPlist, _, genErr := generatePlist(current, downloadPath)
 	if genErr != nil {
 		api.SendFail(genErr.Error(), c)
 		return
@@ -157,7 +159,15 @@ func uploadApk(c *gin.Context) {
 	version := pkg.Manifest().VersionName
 	build := strconv.Itoa(pkg.Manifest().VersionCode)
 	name, _ := pkg.Label(nil)
-	log.Println(name)
+
+	icon, _ := pkg.Icon(nil)
+	var iconB64 string
+	iconB64, cErr := others.ConvPngToBase64String(&icon)
+	log.Println(iconB64)
+
+	if cErr != nil {
+		log.Println(cErr, iconB64)
+	}
 
 	packageName := pkg.PackageName()
 
@@ -205,17 +215,49 @@ func aliyunOSSUpload(filename string, localPath string) (downloadURL string, err
 	return
 }
 
-func generatePlist(current string, downloadURL string) (plistPath string, plistDir string, infoplist ipa.InfoPlist,genErr error) {
+func generatePlist(current string, downloadURL string) (plistPath string, plistDir string, infoplist ipa.InfoPlist, icon string,genErr error) {
 	tem := config.Config.FilesPath.TemPath + "/" + current
 	payloadDir := tem + "/Payload"
 	dirs, _ := ioutil.ReadDir(payloadDir)
 	infoPlistPath := ""
+	applicationDir := ""
 	if len(dirs) > 0 && dirs[0].IsDir() {
 		infoPlistPath = payloadDir + "/" + dirs[0].Name() + "/info.plist"
+		applicationDir = payloadDir + "/" + dirs[0].Name()
 	} else {
 		genErr = errors.New("读取文件夹出错")
 		return
 	}
+
+	// got icon
+	subs, e := ioutil.ReadDir(applicationDir)
+	if e == nil {
+		var buf []byte
+		for i := 0; i < len(subs); i ++  {
+			p := applicationDir + "/" + subs[i].Name()
+			if strings.HasPrefix(subs[i].Name(), "AppIcon") && !subs[i].IsDir() {} else {
+				continue
+			}
+
+			b, iconErr := ioutil.ReadFile(p)
+			if iconErr != nil {
+				continue
+			}
+
+			if buf == nil {
+				buf = b
+			} else {
+				if len(buf) < len(b) {
+					buf = b
+				}
+			}
+		}
+
+		icon = base64.StdEncoding.EncodeToString(buf)
+	}
+
+	log.Println("ios icon：", icon)
+
 	bplist, readErr := ioutil.ReadFile(infoPlistPath)
 	if readErr != nil {
 		genErr = readErr
